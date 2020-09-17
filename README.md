@@ -1,8 +1,8 @@
-# python-rest-api-docker
+# Python API Docker Test
 
 steps to run the sample rest service on docker -
 
-1. Clone the Repository - git clone https://github.com/hek23/python-rest-api-docker.git
+1. Clone the Repository - git clone https://gitlab.com/hek23/python-dummy-api
 
 2. Move to the directory - cd python-rest-api-docker
 
