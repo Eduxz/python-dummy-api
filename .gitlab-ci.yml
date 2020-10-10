@@ -1,7 +1,6 @@
-
 stages:
-    build
-    deploy
+  - build
+  - deploy
 
 variables:
   DOCKER_REGISTRY: https://index.docker.io/v1/
