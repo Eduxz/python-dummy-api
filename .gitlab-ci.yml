@@ -28,6 +28,7 @@ deploy:
     - eval $(ssh-agent -s)
     #- echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - echo $SSH_PRIVATE_KEY >> file
+    - chmod 0600 file
     - ssh-add file
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
