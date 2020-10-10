@@ -1,0 +1,37 @@
+
+stages:
+    build
+    deploy
+    
+variables:
+  DOCKER_REGISTRY: https://index.docker.io/v1/
+  DOCKER_REGISTRY_USER: hek23
+  DOCKER_IMAGE: hek23/dummy-api-python
+  USER: deployer
+  DO_IP: 159.203.156.65
+
+
+build_image:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo "{\"auths\":{\"$DOCKER_REGISTRY\":{\"username\":\"$DOCKER_REGISTRY_USER\",\"password\":\"$DOCKER_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $DOCKER_IMAGE
+
+deploy:
+  stage: deploy
+  image: ubuntu
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - ssh -o "StrictHostKeyChecking=no" $USER@$DO_IP
+    - ssh -t $USER@$DO_IP "docker stop $(docker ps -a -q)"
+    - ssh -t $USER@$DO_IP "docker rm $(docker ps -a -q)"
+    - ssh -t $USER@$DO_IP "docker pull $DOCKER_REGISTRY_USER/$DOCKER_IMAGE"
+    - ssh -t $USER@$DO_IP "docker run -d -p 80:5000 $DOCKER_REGISTRY_USER/$DOCKER_IMAGE"
