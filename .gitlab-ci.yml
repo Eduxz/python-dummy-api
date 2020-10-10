@@ -35,7 +35,8 @@ deploy:
   - "which rsync || ( apt-get update -y && apt-get install rsync -y )"
   - eval $(ssh-agent -s)
   # Inject the remote's private key
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\\r' | ssh-add - > /dev/null
+  #- echo "$SSH_PRIVATE_KEY" | tr -d '\\r' | ssh-add - > /dev/null
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
   - mkdir -p ~/.ssh
   - chmod 700 ~/.ssh
   # Append keyscan output into known hosts
