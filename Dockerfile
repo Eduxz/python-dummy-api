@@ -23,6 +23,6 @@ RUN rm -rf /home/test
 
 WORKDIR /usr/src/app
 COPY src ./
-RUN pip install --no-cache -r requirements.txt
+RUN pip3 install --no-cache -r requirements.txt
 EXPOSE 5000
 CMD uwsgi --socket 0.0.0.0:5000 --protocol=http -w controller:app
